@@ -11,3 +11,7 @@ python-dotenv
 joblib
 jupyter
 pytest
+streamlit
+fastapi
+uvicorn
+httpx
