@@ -1,0 +1,12 @@
+.git
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+data
+models
+notebooks
+dashboards
+retail_customer_db_backup.dump
+tests
+logs
