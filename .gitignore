@@ -12,3 +12,4 @@ models/*.pkl
 logs/*.log
 .venv/
 venv/
+*dump
