@@ -26,7 +26,8 @@ SELECT
     order_delivered_customer_date
 FROM orders
 WHERE order_status = 'delivered'
-  AND order_purchase_timestamp IS NOT NULL;
+  AND order_purchase_timestamp IS NOT NULL
+  AND customer_id IS NOT NULL;
 
 -- ---------------------------------------------------------
 -- 2. Total payment value per order (an order can have several
@@ -35,7 +36,12 @@ WHERE order_status = 'delivered'
 CREATE VIEW payments_per_order AS
 SELECT
     order_id,
-    SUM(payment_value) AS total_payment_value
+    SUM(
+        CASE
+            WHEN payment_value < 0 THEN 0
+            ELSE COALESCE(payment_value, 0)
+        END
+    ) AS total_payment_value
 FROM order_payments
 GROUP BY order_id;
 
@@ -50,7 +56,11 @@ SELECT
     c.customer_unique_id,
     o.order_id,
     o.order_purchase_timestamp,
-    COALESCE(p.total_payment_value, 0) AS order_value
+    DATE(o.order_purchase_timestamp) AS order_date,
+    COALESCE(p.total_payment_value, 0) AS total_order_value
 FROM orders_clean o
 JOIN customers c ON c.customer_id = o.customer_id
 LEFT JOIN payments_per_order p ON p.order_id = o.order_id;
+
+COMMENT ON VIEW customer_order_base IS
+'Base table for RFM feature engineering (src/feature_engineering.py). One row per delivered order, keyed by customer_unique_id.';
