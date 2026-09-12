@@ -1,4 +1,4 @@
-# Phase 8B Real-Data Evaluation
+# Real-Data Evaluation
 
 ## 1. Setup
 
